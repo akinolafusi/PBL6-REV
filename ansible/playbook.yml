@@ -47,7 +47,12 @@
     - name: Create a volume group
       lvg:
         vg: webdata-vg
-        pvs: /dev/xvdf1, /dev/xvdg1, /dev/xvdh1
+        pvs: /dev/xvdf1,/dev/xvdg1,/dev/xvdh1
+    - name: create a logical vol apps-lv with 14G
+      lvol: 
+        vg: webdata-vg
+        lv: apps-lv
+        size: 14G
    
 
     
