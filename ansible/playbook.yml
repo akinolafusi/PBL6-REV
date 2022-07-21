@@ -59,6 +59,34 @@
         vg: webdata-vg
         lv: logs-lv
         size: 14G
+    - name: Create /var/www/html directory to store website files
+      become: true
+      file:
+        path: /var/www/html
+        state: directory
+    - name: Create /home/recovery/logs to store backup of log data
+      become: true
+      file:
+        path: /home/recovery/logs
+        state: directory
+    - name: Mount /var/www/html on apps-lv logical volume
+      mount:
+        path: /var/www/html
+        src: /dev/webdata-vg/apps-lv
+        fstype: ext4
+        state: present
+    - name: Use rsync utility to backup all the files in the log directory /var/log into /home/recovery/logs
+      shell: rsync -av /var/log/. /home/recovery/logs/
+    - name: Mount /var/log on logs-lv logical volume
+      mount:
+        path: /var/log
+        src: /dev/webdata-vg/logs-lv
+        state: present
+    - name: Restore log files back into /var/log directory
+      shell: rsync -av /home/recovery/logs/. /var/log
+    
+    
+
    
 
     
