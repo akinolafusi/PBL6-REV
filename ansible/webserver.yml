@@ -81,6 +81,7 @@
       mount:
         path: /var/log
         src: /dev/webdata-vg/logs-lv
+        fstype: ext4
         state: present
     - name: Restore log files back into /var/log directory
       shell: rsync -av /home/recovery/logs/. /var/log

@@ -1,0 +1,94 @@
+
+- name: Create a partition on webserver
+  hosts: data
+  become: true
+  become_user: root
+  tasks:
+    - name: Install lvm2 dependency
+      package:
+        name: lvm2
+        state: present
+    - name: create partitions
+      block:
+        - name: install parted
+          package: 
+            name: parted
+            state: present
+    - name: add new partitions
+      parted: 
+        device: /dev/xvdf
+        number: 1
+        flags: [ lvm ]
+        state: present
+        part_end: 100% 
+    - name: add new partitions
+      parted: 
+        device: /dev/xvdg
+        number: 1
+        flags: [ lvm ]
+        state: present
+        part_end: 100%
+    - name: add new partitions
+      parted: 
+        device: /dev/xvdh
+        number: 1
+        flags: [ lvm ]
+        state: present
+        part_end: 100%
+    # - name: pvcreate xvdf1
+    #   become: true
+    #   shell: pvcreate /dev/xvdf1
+    # - name: pvcreate xvdg1
+    #   become: true
+    #   shell: pvcreate /dev/xvdg1
+    # - name: pvcreate xvdh1
+    #   become: true
+    #   shell: pvcreate /dev/xvdh1
+    - name: Create a volume group
+      lvg:
+        vg: webdata-vg
+        pvs: /dev/xvdf1,/dev/xvdg1,/dev/xvdh1
+        state: present
+    - name: create a logical vol db-lv with 14G
+      lvol: 
+        vg: webdata-vg
+        lv: db-lv
+        size: 14G
+    - name: create a logical vol logs-lv with 14G
+      lvol: 
+        vg: webdata-vg
+        lv: logs-lv
+        size: 14G
+    - name: Create /db directory to store website files
+      become: true
+      file:
+        path: /db
+        state: directory
+    - name: Create /home/recovery/logs to store backup of log data
+      become: true
+      file:
+        path: /home/recovery/logs
+        state: directory
+    - name: Mount /db on db-lv logical volume
+      mount:
+        path: /db
+        src: /dev/webdata-vg/db-lv
+        fstype: ext4
+        state: present
+    - name: Use rsync utility to backup all the files in the log directory /var/log into /home/recovery/logs
+      shell: rsync -av /var/log/. /home/recovery/logs/
+    - name: Mount /var/log on logs-lv logical volume
+      mount:
+        path: /var/log
+        src: /dev/webdata-vg/logs-lv
+        fstype: ext4
+        state: present
+    - name: Restore log files back into /var/log directory
+      shell: rsync -av /home/recovery/logs/. /var/log
+    
+    
+
+   
+
+    
+    
