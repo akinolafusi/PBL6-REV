@@ -4,6 +4,10 @@
   become: true
   become_user: root
   tasks:
+    - name: Install lvm2 dependency
+      package:
+        name: lvm2
+        state: present
     - name: create partitions
       block:
         - name: install parted
@@ -30,7 +34,16 @@
         number: 1
         flags: [ lvm ]
         state: present
-        part_end: 100% 
+        part_end: 100%
+    - name: pvcreate xvdf1
+      become: true
+      shell: pvcreate /dev/xvdf1
+    - name: pvcreate xvdg1
+      become: true
+      shell: pvcreate /dev/xvdg1
+    - name: pvcreate xvdh1
+      become: true
+      shell: pvcreate /dev/xvdh1
     - name: Create a volume group
       lvg:
         vg: webdata-vg
