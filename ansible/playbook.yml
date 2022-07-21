@@ -35,23 +35,29 @@
         flags: [ lvm ]
         state: present
         part_end: 100%
-    - name: pvcreate xvdf1
-      become: true
-      shell: pvcreate /dev/xvdf1
-    - name: pvcreate xvdg1
-      become: true
-      shell: pvcreate /dev/xvdg1
-    - name: pvcreate xvdh1
-      become: true
-      shell: pvcreate /dev/xvdh1
+    # - name: pvcreate xvdf1
+    #   become: true
+    #   shell: pvcreate /dev/xvdf1
+    # - name: pvcreate xvdg1
+    #   become: true
+    #   shell: pvcreate /dev/xvdg1
+    # - name: pvcreate xvdh1
+    #   become: true
+    #   shell: pvcreate /dev/xvdh1
     - name: Create a volume group
       lvg:
         vg: webdata-vg
         pvs: /dev/xvdf1,/dev/xvdg1,/dev/xvdh1
+        state: present
     - name: create a logical vol apps-lv with 14G
       lvol: 
         vg: webdata-vg
         lv: apps-lv
+        size: 14G
+    - name: create a logical vol logs-lv with 14G
+      lvol: 
+        vg: webdata-vg
+        lv: logs-lv
         size: 14G
    
 
