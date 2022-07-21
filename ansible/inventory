@@ -1,0 +1,4 @@
+[web]
+18.233.167.151 ansible_ssh_user="ec2-user"   ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+[data]
+54.224.21.128 ansible_ssh_user="ec2-user"    ansible_ssh_common_args='-o StrictHostKeyChecking=no'

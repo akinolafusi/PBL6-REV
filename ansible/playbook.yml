@@ -1,0 +1,41 @@
+
+- name: Create a partition on webserver
+  hosts: web
+  become: true
+  become_user: root
+  tasks:
+    - name: create partitions
+      block:
+        - name: install parted
+          package: 
+            name: parted
+            state: present
+    - name: add new partitions
+      parted: 
+        device: /dev/xvdf
+        number: 1
+        flags: [ lvm ]
+        state: present
+        part_end: 100% 
+    - name: add new partitions
+      parted: 
+        device: /dev/xvdg
+        number: 1
+        flags: [ lvm ]
+        state: present
+        part_end: 100%
+    - name: add new partitions
+      parted: 
+        device: /dev/xvdh
+        number: 1
+        flags: [ lvm ]
+        state: present
+        part_end: 100% 
+    - name: Create a volume group
+      lvg:
+        vg: webdata-vg
+        pvs: /dev/xvdf1, /dev/xvdg1, /dev/xvdh1
+   
+
+    
+    
