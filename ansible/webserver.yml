@@ -74,7 +74,7 @@
         path: /var/www/html
         src: /dev/webdata-vg/apps-lv
         fstype: ext4
-        state: present
+        state: mounted
     - name: Use rsync utility to backup all the files in the log directory /var/log into /home/recovery/logs
       shell: rsync -av /var/log/. /home/recovery/logs/
     - name: Mount /var/log on logs-lv logical volume
@@ -82,7 +82,7 @@
         path: /var/log
         src: /dev/webdata-vg/logs-lv
         fstype: ext4
-        state: present
+        state: mounted
     - name: Restore log files back into /var/log directory
       shell: rsync -av /home/recovery/logs/. /var/log
     
